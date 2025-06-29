@@ -21,6 +21,7 @@ import {
   CheckCircle,
 } from '@mui/icons-material';
 import { supabase } from '@/lib/supabase';
+import ReparacionesSection from './ReparacionesSection';
 
 interface Categoria {
   id: number;
@@ -64,9 +65,10 @@ const iconMap: { [key: string]: React.ElementType } = {
 export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }: VehicleAccordionProps) {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [valores, setValores] = useState<Valor[]>([]);
+  const [reparaciones, setReparaciones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string | false>('identificacion');
+  const [expanded, setExpanded] = useState<string | false>('reparaciones');
 
   const loadData = useCallback(async () => {
     try {
@@ -106,8 +108,20 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
       
       if (valoresError) throw valoresError;
 
+      // Cargar reparaciones estructuradas
+      const { data: reparacionesData, error: reparacionesError } = await supabase
+        .from('vista_reparaciones_detalle')
+        .select('*')
+        .eq('vehiculo_id', vehiculoId);
+      
+      if (reparacionesError) {
+        console.warn('No se pudieron cargar reparaciones:', reparacionesError);
+        // No lanzar error, continuar sin reparaciones
+      }
+
       setCategorias(categoriasData || []);
       setValores(valoresData || []);
+      setReparaciones(reparacionesData || []);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
       console.error('Error loading vehicle data:', err);
@@ -204,7 +218,12 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
       <CardContent>
         {categorias.map((categoria) => {
           const valoresCategoria = getValoresPorCategoria(categoria.id);
-          const cantidadItems = valoresCategoria.length;
+          let cantidadItems = valoresCategoria.length;
+          
+          // Para reparaciones, usar el conteo de la nueva estructura
+          if (categoria.codigo === 'reparaciones') {
+            cantidadItems = reparaciones.length;
+          }
 
           return (
             <Accordion
@@ -228,7 +247,7 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
                   {cantidadItems > 0 && (
                     <Chip 
                       label={cantidadItems} 
-                      color="primary" 
+                      color={categoria.codigo === 'reparaciones' && cantidadItems > 0 ? 'error' : 'primary'}
                       size="small"
                       sx={{ mr: 1 }}
                     />
@@ -237,7 +256,9 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
               </AccordionSummary>
               <AccordionDetails>
                 <Box>
-                  {cantidadItems === 0 ? (
+                  {categoria.codigo === 'reparaciones' ? (
+                    <ReparacionesSection reparaciones={reparaciones} />
+                  ) : cantidadItems === 0 ? (
                     <Typography variant="body2" color="text.secondary">
                       No hay información disponible
                     </Typography>
