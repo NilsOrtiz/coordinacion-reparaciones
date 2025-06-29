@@ -24,42 +24,51 @@ import { useEffect, useState } from 'react';
 import { supabase, Vehiculo, Reparacion } from '@/lib/supabase';
 
 // Datos de ejemplo basados en el vehículo 78 - Supabase connected
-const vehiculoEjemplo = {
-  numeroInterno: 78,
+const vehiculoEjemplo: Vehiculo = {
+  id: 1,
+  numero_interno: 78,
   marca: 'Peugeot',
   modelo: 'Expert',
   patente: 'AD897UQ',
   titular: 'Duran Vaca Patricia',
-  kilometrajeActual: 202056,
+  kilometraje_actual: 202056,
 };
 
-const reparacionesEjemplo = [
+const reparacionesEjemplo: Reparacion[] = [
   {
+    id: 1,
+    vehiculo_id: 1,
     area: 'Motor',
     descripcion: 'Perdida de potencia',
     urgencia: 'EXTREMA_IMPORTANCIA',
-    tiempoEstimado: 'Indeterminado',
+    tiempo_estimado: 'Indeterminado',
     disponibilidad: 'DISPONIBLE'
   },
   {
+    id: 2,
+    vehiculo_id: 1,
     area: 'Motor', 
     descripcion: 'Embrague inoperativo',
     urgencia: 'EXTREMA_IMPORTANCIA',
-    tiempoEstimado: '3 días',
+    tiempo_estimado: '3 días',
     disponibilidad: 'DISPONIBLE'
   },
   {
+    id: 3,
+    vehiculo_id: 1,
     area: 'Eléctrica',
     descripcion: 'Farol con rajadura',
     urgencia: 'POCA_IMPORTANCIA',
-    tiempoEstimado: '2 horas',
+    tiempo_estimado: '2 horas',
     disponibilidad: 'NO_DISPONIBLE'
   },
   {
+    id: 4,
+    vehiculo_id: 1,
     area: 'Eléctrica',
     descripcion: 'Foco quemado',
     urgencia: 'IMPORTANTE',
-    tiempoEstimado: '15 minutos',
+    tiempo_estimado: '15 minutos',
     disponibilidad: 'DISPONIBLE'
   },
 ];
@@ -119,8 +128,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error loading data:', error);
       // Usar datos de ejemplo si falla la conexión
-      setVehiculos([vehiculoEjemplo as Vehiculo]);
-      setReparaciones(reparacionesEjemplo as Reparacion[]);
+      setVehiculos([vehiculoEjemplo]);
+      setReparaciones(reparacionesEjemplo);
     } finally {
       setLoading(false);
     }
@@ -235,7 +244,7 @@ export default function Dashboard() {
           <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardHeader 
-                title={`Vehículo N°${vehiculoActual.numero_interno || vehiculoActual.numeroInterno}`}
+                title={`Vehículo N°${vehiculoActual.numero_interno}`}
                 subheader={`${vehiculoActual.marca} ${vehiculoActual.modelo} - ${vehiculoActual.patente}`}
               />
               <CardContent>
@@ -243,7 +252,7 @@ export default function Dashboard() {
                   <strong>Titular:</strong> {vehiculoActual.titular}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  <strong>Kilometraje actual:</strong> {(vehiculoActual.kilometraje_actual || vehiculoActual.kilometrajeActual)?.toLocaleString('es-AR')} km
+                  <strong>Kilometraje actual:</strong> {vehiculoActual.kilometraje_actual?.toLocaleString('es-AR')} km
                 </Typography>
                 
                 <Box sx={{ mt: 3 }}>
@@ -292,7 +301,7 @@ export default function Dashboard() {
                         size="small"
                       />
                       <Typography variant="body2" color="textSecondary">
-                        {rep.tiempoEstimado}
+                        {rep.tiempo_estimado}
                       </Typography>
                     </Box>
                   </Box>
