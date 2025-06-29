@@ -21,7 +21,7 @@ import {
   Notifications,
 } from '@mui/icons-material';
 
-// Datos de ejemplo basados en el vehículo 78
+// Datos de ejemplo basados en el vehículo 78 - Deploy fix
 const vehiculoEjemplo = {
   numeroInterno: 78,
   marca: 'Peugeot',
