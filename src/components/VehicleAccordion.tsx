@@ -244,7 +244,7 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
                   ) : (
                     <Grid container spacing={2}>
                       {valoresCategoria.map((valor) => (
-                        <Grid item xs={12} sm={6} md={4} key={valor.id}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={valor.id}>
                           {renderValor(valor)}
                         </Grid>
                       ))}
