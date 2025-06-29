@@ -221,8 +221,8 @@ export default function Dashboard() {
           <Grid size={{ xs: 12 }}>
             <Card>
               <CardHeader 
-                title={`🚗 Vehículo N°${vehiculoActual.numero_interno} - ${vehiculoActual.marca} ${vehiculoActual.modelo}`}
-                subheader={`Patente: ${vehiculoActual.patente}`}
+                title={`N°${vehiculoActual.numero_interno} ${vehiculoActual.marca} ${vehiculoActual.modelo}`}
+                subheader={`Patente: ${vehiculoActual.patente} | Titular: ${vehiculoActual.titular || 'No especificado'}`}
               />
             </Card>
           </Grid>
