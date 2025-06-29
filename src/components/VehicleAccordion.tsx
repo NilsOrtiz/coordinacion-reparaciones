@@ -68,10 +68,6 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | false>('identificacion');
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
@@ -119,6 +115,10 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
       setLoading(false);
     }
   }, [vehiculoId, perfilUsuario]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
