@@ -248,7 +248,7 @@ export default function Dashboard() {
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Chip 
                         label={getUrgenciaText(rep.urgencia)}
-                        color={getUrgenciaColor(rep.urgencia) as any}
+                        color={getUrgenciaColor(rep.urgencia) as 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
                         size="small"
                       />
                       <Typography variant="body2" color="textSecondary">
