@@ -119,8 +119,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error loading data:', error);
       // Usar datos de ejemplo si falla la conexión
-      setVehiculos([vehiculoEjemplo as any]);
-      setReparaciones(reparacionesEjemplo as any);
+      setVehiculos([vehiculoEjemplo as Vehiculo]);
+      setReparaciones(reparacionesEjemplo as Reparacion[]);
     } finally {
       setLoading(false);
     }
