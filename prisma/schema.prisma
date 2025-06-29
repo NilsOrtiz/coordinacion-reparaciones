@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Vehículos de la flota
+model Vehicle {
+  id              String   @id @default(cuid())
+  numeroInterno   Int      @unique // N° Interno (ej: 78)
+  marca           String   // Peugeot
+  modelo          String   // Expert  
+  patente         String   @unique // AD897UQ
+  titular         String?  // Duran Vaca Patricia
+  chofer          String?
+  telefono        String?
+  kilometrajeActual Float?  // Kilometraje actual del vehículo
+  
+  // Relaciones
+  mantenimientos  Maintenance[]
+  reparaciones    Repair[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("vehicles")
+}
+
+// Registro de mantenimientos preventivos
+model Maintenance {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
+  descripcion String   // "Cambio de aceite", "Cambio de pastillas", etc.
+  kilometraje Float    // Kilometraje cuando se realizó
+  fecha       DateTime // Fecha del mantenimiento
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("maintenances")
+}
+
+// Reparaciones pendientes por área
+model Repair {
+  id              String      @id @default(cuid())
+  vehicleId       String
+  vehicle         Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
+  area            RepairArea  // Motor, Electrica, Electronica, Chaperio, Interiores
+  descripcion     String      // "Perdida de potencia", "Farol con rajadura"
+  urgencia        Priority    // Extrema Importancia, Importante, Poca Importancia
+  tiempoEstimado  String      // "3 dias", "2 horas", "Indeterminado"
+  disponibilidad  Availability // Disponible, No disponible
+  
+  // Campos adicionales para gestión
+  resuelto        Boolean     @default(false)
+  fechaResolucion DateTime?
+  comentarios     String?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  @@map("repairs")
+}
+
+// Enums
+enum RepairArea {
+  MOTOR
+  ELECTRICA  
+  ELECTRONICA
+  CHAPERIO
+  INTERIORES
+  CARROCERIA
+  TAPICERIA
+  
+  @@map("repair_areas")
+}
+
+enum Priority {
+  EXTREMA_IMPORTANCIA
+  IMPORTANTE
+  POCA_IMPORTANCIA
+  
+  @@map("priorities")
+}
+
+enum Availability {
+  DISPONIBLE
+  NO_DISPONIBLE
+  
+  @@map("availabilities")
+}
+
+// Usuario admin (simple)
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String   // Hash simple
+  role      UserRole @default(ADMIN)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  OPERACIONES
+  
+  @@map("user_roles")
+}
