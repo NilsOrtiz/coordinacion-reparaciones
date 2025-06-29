@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { supabase } from '@/lib/supabase';
 import ReparacionesSection from './ReparacionesSection';
+import HistorialSection from './HistorialSection';
 
 interface Categoria {
   id: number;
@@ -84,9 +85,11 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [valores, setValores] = useState<Valor[]>([]);
   const [reparaciones, setReparaciones] = useState<ReparacionEstructurada[]>([]);
+  const [historialMantenimientos, setHistorialMantenimientos] = useState<any[]>([]);
+  const [historialReparaciones, setHistorialReparaciones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string | false>('reparaciones');
+  const [expanded, setExpanded] = useState<string | false>('operativo');
 
   const loadData = useCallback(async () => {
     try {
@@ -137,9 +140,33 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
         // No lanzar error, continuar sin reparaciones
       }
 
+      // Cargar historial de mantenimientos
+      const { data: mantenimientosData, error: mantenimientosError } = await supabase
+        .from('vista_historial_mantenimientos')
+        .select('*')
+        .eq('vehiculo_id', vehiculoId)
+        .limit(10); // Últimos 10 registros
+
+      if (mantenimientosError) {
+        console.warn('No se pudieron cargar mantenimientos:', mantenimientosError);
+      }
+
+      // Cargar historial de reparaciones
+      const { data: reparacionesHistorialData, error: reparacionesHistorialError } = await supabase
+        .from('vista_historial_reparaciones')
+        .select('*')
+        .eq('vehiculo_id', vehiculoId)
+        .limit(10); // Últimos 10 registros
+
+      if (reparacionesHistorialError) {
+        console.warn('No se pudieron cargar historial reparaciones:', reparacionesHistorialError);
+      }
+
       setCategorias(categoriasData || []);
       setValores(valoresData || []);
       setReparaciones(reparacionesData || []);
+      setHistorialMantenimientos(mantenimientosData || []);
+      setHistorialReparaciones(reparacionesHistorialData || []);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
       console.error('Error loading vehicle data:', err);
@@ -242,6 +269,13 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
           if (categoria.codigo === 'reparaciones') {
             cantidadItems = reparaciones.length;
           }
+          // Para historiales, usar el conteo específico
+          else if (categoria.codigo === 'historial_mantenimiento') {
+            cantidadItems = historialMantenimientos.length;
+          }
+          else if (categoria.codigo === 'historial_reparaciones') {
+            cantidadItems = historialReparaciones.length;
+          }
 
           return (
             <Accordion
@@ -276,6 +310,10 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
                 <Box>
                   {categoria.codigo === 'reparaciones' ? (
                     <ReparacionesSection reparaciones={reparaciones} />
+                  ) : categoria.codigo === 'historial_mantenimiento' ? (
+                    <HistorialSection items={historialMantenimientos} tipo="mantenimiento" />
+                  ) : categoria.codigo === 'historial_reparaciones' ? (
+                    <HistorialSection items={historialReparaciones} tipo="reparacion" />
                   ) : cantidadItems === 0 ? (
                     <Typography variant="body2" color="text.secondary">
                       No hay información disponible
