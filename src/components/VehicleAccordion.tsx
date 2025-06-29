@@ -50,6 +50,21 @@ interface Valor {
   item: Item;
 }
 
+interface ReparacionEstructurada {
+  id: number;
+  vehiculo_id: number;
+  area: string;
+  descripcion: string;
+  gravedad: number;
+  taller_disponible: boolean;
+  tiempo_estimado: string;
+  notas?: string;
+  estado?: string;
+  gravedad_texto?: string;
+  gravedad_color?: string;
+  taller_estado?: string;
+}
+
 interface VehicleAccordionProps {
   vehiculoId: number;
   perfilUsuario?: string;
@@ -65,7 +80,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }: VehicleAccordionProps) {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [valores, setValores] = useState<Valor[]>([]);
-  const [reparaciones, setReparaciones] = useState<any[]>([]);
+  const [reparaciones, setReparaciones] = useState<ReparacionEstructurada[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | false>('reparaciones');
