@@ -6,10 +6,8 @@ import {
   Container, 
   Grid, 
   Card, 
-  CardHeader, 
-  CardContent,
+  CardHeader,
   Box,
-  Chip,
   IconButton,
 } from '@mui/material';
 import {
@@ -74,30 +72,7 @@ const reparacionesEjemplo: Reparacion[] = [
   },
 ];
 
-const mantenimientosEjemplo = [
-  { descripcion: 'Última revisión', kilometraje: 202056, fecha: '28/6/2025' },
-  { descripcion: 'Cambio de aceite', kilometraje: 202056, fecha: '28/6/2025' },
-  { descripcion: 'Cambio de pastillas', kilometraje: 202056, fecha: '28/6/2025' },
-  { descripcion: 'Cambio de disco de embrague', kilometraje: 182650, fecha: '3/1/2025' },
-];
-
-function getUrgenciaColor(urgencia: string) {
-  switch (urgencia) {
-    case 'EXTREMA_IMPORTANCIA': return 'error';
-    case 'IMPORTANTE': return 'warning';
-    case 'POCA_IMPORTANCIA': return 'success';
-    default: return 'default';
-  }
-}
-
-function getUrgenciaText(urgencia: string) {
-  switch (urgencia) {
-    case 'EXTREMA_IMPORTANCIA': return 'Extrema Importancia';
-    case 'IMPORTANTE': return 'Importante';
-    case 'POCA_IMPORTANCIA': return 'Poca Importancia';
-    default: return urgencia;
-  }
-}
+// Funciones removidas - ahora se manejan en VehicleAccordion
 
 export default function Dashboard() {
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);

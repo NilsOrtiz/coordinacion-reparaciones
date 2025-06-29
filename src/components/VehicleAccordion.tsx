@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -70,9 +70,9 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
 
   useEffect(() => {
     loadData();
-  }, [vehiculoId, perfilUsuario]);
+  }, [loadData]);
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -112,13 +112,13 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
 
       setCategorias(categoriasData || []);
       setValores(valoresData || []);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error desconocido');
       console.error('Error loading vehicle data:', err);
     } finally {
       setLoading(false);
     }
-  }
+  }, [vehiculoId, perfilUsuario]);
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);

@@ -51,7 +51,7 @@ export interface Item {
   orden: number
   requerido: boolean
   descripcion?: string
-  configuracion?: any
+  configuracion?: Record<string, unknown>
   activo: boolean
   created_at?: string
 }
@@ -74,7 +74,7 @@ export interface PerfilUsuario {
   nombre: string
   codigo: string
   descripcion?: string
-  configuracion?: any
+  configuracion?: Record<string, unknown>
   activo: boolean
   created_at?: string
 }
