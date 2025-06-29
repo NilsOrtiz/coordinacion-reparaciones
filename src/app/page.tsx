@@ -23,7 +23,7 @@ import {
 import { useEffect, useState } from 'react';
 import { supabase, Vehiculo, Reparacion } from '@/lib/supabase';
 
-// Datos de ejemplo basados en el vehículo 78 - Deploy fix
+// Datos de ejemplo basados en el vehículo 78 - Supabase connected
 const vehiculoEjemplo = {
   numeroInterno: 78,
   marca: 'Peugeot',
