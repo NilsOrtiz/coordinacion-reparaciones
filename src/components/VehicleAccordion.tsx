@@ -125,7 +125,7 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
 
       // Cargar reparaciones estructuradas
       const { data: reparacionesData, error: reparacionesError } = await supabase
-        .from('vista_reparaciones_detalle')
+        .from('vista_reparaciones_simple')
         .select('*')
         .eq('vehiculo_id', vehiculoId);
       

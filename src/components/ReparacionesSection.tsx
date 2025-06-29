@@ -139,13 +139,13 @@ export default function ReparacionesSection({ reparaciones }: ReparacionesSectio
                     </Box>
                   </Grid>
 
-                  {/* Taller Disponible */}
+                  {/* Estado Taller Simplificado */}
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Build fontSize="small" />
                       <Chip
                         icon={reparacion.taller_disponible ? <CheckCircle /> : <Cancel />}
-                        label={reparacion.taller_disponible ? 'Taller Listo' : 'Taller No Disponible'}
+                        label={reparacion.estado_taller_texto || (reparacion.taller_disponible ? 'Taller Listo' : 'No Disponible')}
                         color={reparacion.taller_disponible ? 'success' : 'error'}
                         size="small"
                         variant={reparacion.taller_disponible ? 'filled' : 'outlined'}
