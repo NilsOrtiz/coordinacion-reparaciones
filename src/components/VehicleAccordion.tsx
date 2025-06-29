@@ -259,10 +259,10 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
                   <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     {categoria.orden}. {categoria.nombre}
                   </Typography>
-                  {cantidadItems > 0 && (
+                  {categoria.codigo === 'reparaciones' && cantidadItems > 0 && (
                     <Chip 
                       label={cantidadItems} 
-                      color={categoria.codigo === 'reparaciones' && cantidadItems > 0 ? 'error' : 'primary'}
+                      color="error"
                       size="small"
                       sx={{ mr: 1 }}
                     />
