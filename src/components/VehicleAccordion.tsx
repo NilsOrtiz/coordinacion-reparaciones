@@ -270,10 +270,10 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
             cantidadItems = reparaciones.length;
           }
           // Para historiales, usar el conteo específico
-          else if (categoria.codigo === 'hist_mantenimiento') {
+          else if (categoria.codigo === 'hist_mant') {
             cantidadItems = historialMantenimientos.length;
           }
-          else if (categoria.codigo === 'hist_reparaciones') {
+          else if (categoria.codigo === 'hist_rep') {
             cantidadItems = historialReparaciones.length;
           }
 
@@ -310,9 +310,9 @@ export default function VehicleAccordion({ vehiculoId, perfilUsuario = 'admin' }
                 <Box>
                   {categoria.codigo === 'reparaciones' ? (
                     <ReparacionesSection reparaciones={reparaciones} />
-                  ) : categoria.codigo === 'hist_mantenimiento' ? (
+                  ) : categoria.codigo === 'hist_mant' ? (
                     <HistorialSection items={historialMantenimientos} tipo="mantenimiento" />
-                  ) : categoria.codigo === 'hist_reparaciones' ? (
+                  ) : categoria.codigo === 'hist_rep' ? (
                     <HistorialSection items={historialReparaciones} tipo="reparacion" />
                   ) : cantidadItems === 0 ? (
                     <Typography variant="body2" color="text.secondary">
