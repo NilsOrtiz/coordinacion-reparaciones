@@ -7,6 +7,7 @@ import {
   Grid, 
   Card, 
   CardHeader,
+  CardContent,
   Box,
   IconButton,
 } from '@mui/material';
