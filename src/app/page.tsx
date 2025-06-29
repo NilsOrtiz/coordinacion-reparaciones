@@ -20,6 +20,8 @@ import {
   Settings,
   Notifications,
 } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { supabase, Vehiculo, Reparacion } from '@/lib/supabase';
 
 // Datos de ejemplo basados en el vehículo 78 - Deploy fix
 const vehiculoEjemplo = {
@@ -88,13 +90,51 @@ function getUrgenciaText(urgencia: string) {
 }
 
 export default function Dashboard() {
-  const reparacionesCriticas = reparacionesEjemplo.filter(r => 
+  const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+  const [reparaciones, setReparaciones] = useState<Reparacion[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  async function loadData() {
+    try {
+      // Cargar vehículos
+      const { data: vehiculosData, error: vehiculosError } = await supabase
+        .from('vehiculos')
+        .select('*');
+      
+      if (vehiculosError) throw vehiculosError;
+
+      // Cargar reparaciones
+      const { data: reparacionesData, error: reparacionesError } = await supabase
+        .from('reparaciones')
+        .select('*');
+      
+      if (reparacionesError) throw reparacionesError;
+
+      setVehiculos(vehiculosData || []);
+      setReparaciones(reparacionesData || []);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Usar datos de ejemplo si falla la conexión
+      setVehiculos([vehiculoEjemplo as any]);
+      setReparaciones(reparacionesEjemplo as any);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const reparacionesCriticas = reparaciones.filter(r => 
     r.urgencia === 'EXTREMA_IMPORTANCIA'
   ).length;
   
-  const tallerDisponible = reparacionesEjemplo.filter(r => 
+  const tallerDisponible = reparaciones.filter(r => 
     r.disponibilidad === 'DISPONIBLE'
   ).length;
+
+  const vehiculoActual = vehiculos[0] || vehiculoEjemplo;
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -126,7 +166,7 @@ export default function Dashboard() {
                       Vehículos en Flota
                     </Typography>
                     <Typography variant="h4" component="div">
-                      1
+                      {loading ? '...' : vehiculos.length}
                     </Typography>
                   </Box>
                   <DirectionsCar color="primary" sx={{ fontSize: 40 }} />
@@ -144,7 +184,7 @@ export default function Dashboard() {
                       Reparaciones Críticas
                     </Typography>
                     <Typography variant="h4" component="div" color="error">
-                      {reparacionesCriticas}
+                      {loading ? '...' : reparacionesCriticas}
                     </Typography>
                   </Box>
                   <Warning color="error" sx={{ fontSize: 40 }} />
@@ -162,7 +202,7 @@ export default function Dashboard() {
                       Taller Disponible
                     </Typography>
                     <Typography variant="h4" component="div" color="success.main">
-                      {tallerDisponible}
+                      {loading ? '...' : tallerDisponible}
                     </Typography>
                   </Box>
                   <CheckCircle color="success" sx={{ fontSize: 40 }} />
@@ -180,7 +220,7 @@ export default function Dashboard() {
                       Mantenimientos
                     </Typography>
                     <Typography variant="h4" component="div">
-                      {mantenimientosEjemplo.length}
+                      {loading ? '...' : reparaciones.length}
                     </Typography>
                   </Box>
                   <Build color="primary" sx={{ fontSize: 40 }} />
@@ -195,15 +235,15 @@ export default function Dashboard() {
           <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardHeader 
-                title={`Vehículo N°${vehiculoEjemplo.numeroInterno}`}
-                subheader={`${vehiculoEjemplo.marca} ${vehiculoEjemplo.modelo} - ${vehiculoEjemplo.patente}`}
+                title={`Vehículo N°${vehiculoActual.numero_interno || vehiculoActual.numeroInterno}`}
+                subheader={`${vehiculoActual.marca} ${vehiculoActual.modelo} - ${vehiculoActual.patente}`}
               />
               <CardContent>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  <strong>Titular:</strong> {vehiculoEjemplo.titular}
+                  <strong>Titular:</strong> {vehiculoActual.titular}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  <strong>Kilometraje actual:</strong> {vehiculoEjemplo.kilometrajeActual.toLocaleString('es-AR')} km
+                  <strong>Kilometraje actual:</strong> {(vehiculoActual.kilometraje_actual || vehiculoActual.kilometrajeActual)?.toLocaleString('es-AR')} km
                 </Typography>
                 
                 <Box sx={{ mt: 3 }}>
@@ -230,7 +270,7 @@ export default function Dashboard() {
                 subheader="Estado actual por área"
               />
               <CardContent sx={{ maxHeight: 400, overflow: 'auto' }}>
-                {reparacionesEjemplo.map((rep, index) => (
+                {reparaciones.map((rep, index) => (
                   <Box key={index} sx={{ mb: 2, p: 2, border: 1, borderColor: 'grey.200', borderRadius: 1 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                       <Typography variant="subtitle2" color="primary">
