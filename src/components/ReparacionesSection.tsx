@@ -28,6 +28,9 @@ interface Reparacion {
   gravedad_texto?: string;
   gravedad_color?: string;
   taller_estado?: string;
+  estado_taller_texto?: string;
+  estado_taller_color?: string;
+  motivo_no_disponible?: string;
 }
 
 interface ReparacionesSectionProps {
