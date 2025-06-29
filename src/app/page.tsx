@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { supabase, Vehiculo, Reparacion } from '@/lib/supabase';
+import VehicleAccordion from '@/components/VehicleAccordion';
 
 // Datos de ejemplo basados en el vehículo 78 - Supabase connected
 const vehiculoEjemplo: Vehiculo = {
@@ -239,75 +240,28 @@ export default function Dashboard() {
           </Grid>
         </Grid>
 
+        {/* Nueva interfaz de acordeón */}
         <Grid container spacing={3}>
-          {/* Información del vehículo */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12 }}>
             <Card>
               <CardHeader 
-                title={`Vehículo N°${vehiculoActual.numero_interno}`}
-                subheader={`${vehiculoActual.marca} ${vehiculoActual.modelo} - ${vehiculoActual.patente}`}
+                title={`🚗 Vehículo N°${vehiculoActual.numero_interno} - ${vehiculoActual.marca} ${vehiculoActual.modelo}`}
+                subheader={`Patente: ${vehiculoActual.patente}`}
               />
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  <strong>Titular:</strong> {vehiculoActual.titular}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  <strong>Kilometraje actual:</strong> {vehiculoActual.kilometraje_actual?.toLocaleString('es-AR')} km
-                </Typography>
-                
-                <Box sx={{ mt: 3 }}>
-                  <Typography variant="h6" gutterBottom>
-                    Últimos Mantenimientos
-                  </Typography>
-                  {mantenimientosEjemplo.slice(0, 3).map((mant, index) => (
-                    <Box key={index} sx={{ mb: 1 }}>
-                      <Typography variant="body2">
-                        <strong>{mant.descripcion}:</strong> {mant.kilometraje.toLocaleString('es-AR')} km ({mant.fecha})
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </CardContent>
             </Card>
           </Grid>
-
-          {/* Reparaciones pendientes */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card>
-              <CardHeader 
-                title="Reparaciones Pendientes"
-                subheader="Estado actual por área"
+          
+          <Grid size={{ xs: 12 }}>
+            {loading ? (
+              <Box display="flex" justifyContent="center" p={4}>
+                <Typography>Cargando información del vehículo...</Typography>
+              </Box>
+            ) : (
+              <VehicleAccordion 
+                vehiculoId={vehiculoActual.id} 
+                perfilUsuario="admin"
               />
-              <CardContent sx={{ maxHeight: 400, overflow: 'auto' }}>
-                {reparaciones.map((rep, index) => (
-                  <Box key={index} sx={{ mb: 2, p: 2, border: 1, borderColor: 'grey.200', borderRadius: 1 }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                      <Typography variant="subtitle2" color="primary">
-                        {rep.area}
-                      </Typography>
-                      <Chip 
-                        label={rep.disponibilidad === 'DISPONIBLE' ? 'Disponible' : 'No Disponible'}
-                        color={rep.disponibilidad === 'DISPONIBLE' ? 'success' : 'error'}
-                        size="small"
-                      />
-                    </Box>
-                    <Typography variant="body2" gutterBottom>
-                      {rep.descripcion}
-                    </Typography>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Chip 
-                        label={getUrgenciaText(rep.urgencia)}
-                        color={getUrgenciaColor(rep.urgencia) as 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
-                        size="small"
-                      />
-                      <Typography variant="body2" color="textSecondary">
-                        {rep.tiempo_estimado}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </CardContent>
-            </Card>
+            )}
           </Grid>
         </Grid>
       </Container>

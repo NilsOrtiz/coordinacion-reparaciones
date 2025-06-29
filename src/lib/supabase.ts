@@ -29,3 +29,52 @@ export interface Reparacion {
   created_at?: string
   updated_at?: string
 }
+
+// Nuevas interfaces para la estructura jerárquica
+export interface Categoria {
+  id: number
+  nombre: string
+  codigo: string
+  orden: number
+  icono: string
+  descripcion: string
+  activo: boolean
+  created_at?: string
+}
+
+export interface Item {
+  id: number
+  categoria_id: number
+  nombre: string
+  codigo: string
+  tipo: string
+  orden: number
+  requerido: boolean
+  descripcion?: string
+  configuracion?: any
+  activo: boolean
+  created_at?: string
+}
+
+export interface Valor {
+  id: number
+  vehiculo_id: number
+  item_id: number
+  valor: string
+  valor_numerico?: number
+  valor_fecha?: string
+  valor_booleano?: boolean
+  notas?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export interface PerfilUsuario {
+  id: number
+  nombre: string
+  codigo: string
+  descripcion?: string
+  configuracion?: any
+  activo: boolean
+  created_at?: string
+}
